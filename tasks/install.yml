@@ -135,3 +135,13 @@
   when:
     - ansible_version.full is version('2.4', '>=')
     - ansible_selinux.status == "enabled"
+
+- name: Install rsync
+  apt:
+    update_cache: true
+    pkg:
+      - rsync
+  register: _download_packages
+  until: _download_packages is succeeded
+  retries: 5
+  delay: 2

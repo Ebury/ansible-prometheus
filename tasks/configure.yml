@@ -12,15 +12,15 @@
   notify:
     - reload prometheus
 
-- name: copy custom alerting rule files
-  copy:
-    src: "{{ item }}"
+- name: Synchronize custom alerting rule files
+  synchronize:
+    src: "{{ item | dirname }}/"
     dest: "{{ prometheus_config_dir }}/rules/"
-    owner: root
-    group: prometheus
-    mode: 0640
-    validate: "{{ _prometheus_binary_install_dir }}/promtool check rules %s"
-  with_fileglob: "{{ prometheus_alert_rules_files }}"
+    delete: true
+    perms: false
+    group: false
+    owner: false
+  loop: "{{ prometheus_alert_rules_files }}"
   notify:
     - reload prometheus
 
