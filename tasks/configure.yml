@@ -20,6 +20,7 @@
     perms: false
     group: false
     owner: false
+    copy_links: true
   loop: "{{ prometheus_alert_rules_files }}"
   register: _prometheus_sync_rules
   notify:
