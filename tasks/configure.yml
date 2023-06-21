@@ -21,8 +21,19 @@
     group: false
     owner: false
   loop: "{{ prometheus_alert_rules_files }}"
+  register: _prometheus_sync_rules
   notify:
     - reload prometheus
+
+- name: Recursively change ownership of the rules directory
+  file:
+    path: "{{ prometheus_config_dir }}/rules"
+    state: directory
+    recurse: yes
+    owner: root
+    group: prometheus
+    mode: 0770
+  when: _prometheus_sync_rules is changed
 
 - name: configure prometheus
   template:
