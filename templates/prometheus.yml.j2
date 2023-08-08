@@ -19,6 +19,9 @@ remote_read:
 
 rule_files:
   - {{ prometheus_config_dir }}/rules/*.rules
+  {% if prometheus_alert_rules_files_subdirs != [] %}
+  {{ prometheus_alert_rules_files_subdirs | to_nice_yaml(indent=2,sort_keys=False) | indent(2,False) }}
+  {% endif %}
 
 {% if prometheus_alertmanager_config | length > 0 %}
 alerting:

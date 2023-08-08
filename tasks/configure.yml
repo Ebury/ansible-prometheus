@@ -36,6 +36,18 @@
     mode: 0770
   when: _prometheus_sync_rules is changed
 
+- name: Find all custom alerting rule files subdirectories
+  find:
+    paths: "{{ prometheus_config_dir }}/rules"
+    recurse: no
+    file_type: directory
+  register: _prometheus_local_alert_rules_files_subdirs
+
+- name: Build a list of all the custom alerting rule files directories.
+  set_fact:
+    prometheus_alert_rules_files_subdirs: "{{ prometheus_alert_rules_files_subdirs }} + [ '{{ prometheus_config_dir }}/rules/{{ item.path | basename }}/*.rules' ]"
+  with_items: "{{ _prometheus_local_alert_rules_files_subdirs.files }}"
+
 - name: configure prometheus
   template:
     src: "{{ prometheus_config_file }}"
